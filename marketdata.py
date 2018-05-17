@@ -8,6 +8,3 @@ class MarketData(dict):
 		self.parser=AlphaVantageParser(apikey)
 		function='TIME_SERIES_DAILY_ADJUSTED'
 		self.parser.get(function,stocks)
-
-md=MarketData()
-md.getInternet()
