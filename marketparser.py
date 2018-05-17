@@ -3,20 +3,6 @@ import re
 class MarketParser():
 	def __init__():
 		self.stocks=[]
-class AlphaVantageParser(MarketParser):
-	def __init__(self,apikey):
-		self.csv=''
-		self.apikey=apikey
-	def getCSV(self,function,stock):
-		baseurl='https://www.alphavantage.co/'
-		params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv'})
-		try:
-			f=urllib.urlopen(baseurl+'query?%s'%params)
-			self.csv=f.read()
-		except:
-			print f.info()
-			print f.getcode()
-		return self.csv
 	def getData(self):
 		res=[]
 		if self.csv=='':
@@ -34,3 +20,17 @@ class AlphaVantageParser(MarketParser):
 				dLine[header[i]]=tmp[i]
 			res.append(dLine)
 		return res
+class AlphaVantageParser(MarketParser):
+	def __init__(self,apikey):
+		self.csv=''
+		self.apikey=apikey
+	def getCSV(self,function,stock):
+		baseurl='https://www.alphavantage.co/'
+		params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv'})
+		try:
+			f=urllib.urlopen(baseurl+'query?%s'%params)
+			self.csv=f.read()
+		except:
+			print f.info()
+			print f.getcode()
+		return self.csv

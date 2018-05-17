@@ -1,9 +1,6 @@
 from marketparser import *
 from apikey import *
-class Stock(dict):
-	def __init__(self):
-		self['csv']=''
-		self['data']=[]
+from stock import *
 class MarketData(dict):
 	def __init__(self):
 		self.stocks=[]
