@@ -3,7 +3,7 @@ from apikey import *
 class Stock(dict):
 	def __init__(self):
 		self['csv']=''
-		self['data']=''
+		self['data']=[]
 class MarketData(dict):
 	def __init__(self):
 		self.stocks=[]
@@ -28,3 +28,19 @@ class MarketData(dict):
 				data=self[stock]['data']
 				for line in data:
 					print line
+		if target=='all':
+			data=self['all']
+			for date in data.keys():
+				for stock in data[date].keys():
+					print date,stock,data[date][stock]
+	def getCombined(self):
+		res=dict()
+		for stock in self.keys():
+			data=self[stock]['data']
+			for line in data:
+				ts=line['timestamp']
+				if ts not in res:
+					res[ts]=dict()
+				res[ts][stock]=line
+		self['all']=res
+		return res
