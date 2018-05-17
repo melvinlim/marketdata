@@ -6,7 +6,7 @@ class AlphaVantageParser(MarketParser):
 	def __init__(self,apikey):
 		self.csv=''
 		self.apikey=apikey
-	def get(self,function,stock):
+	def getCSV(self,function,stock):
 		baseurl='https://www.alphavantage.co/'
 		params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv'})
 		try:
