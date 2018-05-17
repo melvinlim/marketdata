@@ -4,7 +4,8 @@ class MarketData(dict):
 	def __init__(self):
 		self.stocks=[]
 	def getInternet(self):
-		stocks=[]
+		stocks=['MSFT','FB']
 		self.parser=AlphaVantageParser(apikey)
 		function='TIME_SERIES_DAILY_ADJUSTED'
-		self.parser.get(function,stocks)
+		for stock in stocks:
+			self[stock]=self.parser.get(function,stock)
