@@ -18,18 +18,19 @@ class AlphaVantageParser(MarketParser):
 			print f.getcode()
 		return self.csv
 	def getData(self):
-		res=dict()
+		res=[]
 		if self.csv=='':
 			return res
 		tmp=re.sub(r'\r','',self.csv)
+		tmp=tmp.strip('\n')
 		tmp=tmp.split('\n')
 		header=tmp[0].split(',')
 		body=tmp[1:]
-		for field in header:
-			res[field]=[]
 		for line in body:
+			dLine=dict()
 			tmp=line.split(',')
 			n=len(tmp)
 			for i in range(n):
-				res[header[i]].append(tmp[i])
+				dLine[header[i]]=tmp[i]
+			res.append(dLine)
 		return res
