@@ -7,9 +7,7 @@ class Stock(dict):
 class MarketData(dict):
 	def __init__(self):
 		self.stocks=[]
-	def getFromInternet(self):
-		#stocks=['MSFT','FB','AAPL']
-		stocks=['MSFT']
+	def getFromInternet(self,stocks):
 		self.parser=AlphaVantageParser(apikey)
 		function='TIME_SERIES_DAILY_ADJUSTED'
 		for stock in stocks:
@@ -20,3 +18,13 @@ class MarketData(dict):
 			newStock['data']=s
 			self[stock]=newStock
 		self.stocks=self.keys()
+	def display(self,target):
+		if target=='csv':
+			for stock in self.keys():
+				data=self[stock]['csv']
+				print data
+		if target=='data':
+			for stock in self.keys():
+				data=self[stock]['data']
+				for line in data:
+					print line
