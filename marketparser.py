@@ -34,3 +34,22 @@ class AlphaVantageParser(MarketParser):
 			print f.info()
 			print f.getcode()
 		return self.csv
+class QuandlParser(MarketParser):
+	def __init__(self,apikey):
+		self.csv=''
+		self.apikey=apikey
+	def getCSV(self,function,stock):
+		database_code='EOD'
+		database_code='WIKI'
+		dataset_code=stock
+		return_format='csv'
+		baseurl='https://www.quandl.com/api/v3/datasets/'+database_code+'/'+dataset_code+'/data.'+return_format
+#		params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv'})
+		try:
+#			f=urllib.urlopen(baseurl+'query?%s'%params)
+			f=urllib.urlopen(baseurl)
+			self.csv=f.read()
+		except:
+			print f.info()
+			print f.getcode()
+		return self.csv

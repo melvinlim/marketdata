@@ -4,8 +4,11 @@ from stock import *
 class MarketData(dict):
 	def __init__(self):
 		self.stocks=[]
-	def getFromInternet(self,stocks):
-		self.parser=AlphaVantageParser(apikey)
+	def getFromInternet(self,stocks,parser='av'):
+		if parser=='av':
+			self.parser=AlphaVantageParser(apikey)
+		elif parser=='qd':
+			self.parser=QuandlParser(apikey)
 		function='TIME_SERIES_DAILY_ADJUSTED'
 		for stock in stocks:
 			newStock=Stock()
