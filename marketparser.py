@@ -57,7 +57,9 @@ class QuandlParser(MarketParser):
 	def modifyHeader(self,header):
 		header=re.sub(r'Date','timestamp',header)
 		header=header.lower()
-		header=re.sub(r'trade timestamp','timestamp',header)
+		if self.database_code=='NASDAQOMX':
+			header=re.sub(r'trade timestamp','timestamp',header)
+			header=re.sub(r'index value','adjusted_close',header)
 		return header
 	def getCSV(self,function,stock):
 		if self.apikey:
@@ -65,6 +67,7 @@ class QuandlParser(MarketParser):
 			database_code='NASDAQOMX'
 		else:
 			database_code='WIKI'
+		self.database_code=database_code
 		dataset_code=stock
 		return_format='csv'
 		baseurl='https://www.quandl.com/api/v3/datasets/'+database_code+'/'+dataset_code+'/data.'+return_format
