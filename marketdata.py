@@ -1,10 +1,9 @@
 from marketparser import *
-from apikey import *
 from stock import *
 class MarketData(dict):
 	def __init__(self):
 		self.stocks=[]
-	def getFromInternet(self,stocks,parser='av'):
+	def getFromInternet(self,stocks,parser='av',apikey='demo'):
 		if parser=='av':
 			self.parser=AlphaVantageParser(apikey)
 		elif parser=='qd':

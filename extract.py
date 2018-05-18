@@ -1,4 +1,5 @@
 from marketdata import *
+from apikey import *
 md=MarketData()
 md2=MarketData()
 #stocks=['MSFT','FB','AAPL']
@@ -6,12 +7,12 @@ md2=MarketData()
 #stocks=['FB']
 stocks=['NDX']
 #stocks=['SPY','XUS.TO']
-md.getFromInternet(stocks)
+md.getFromInternet(stocks,'av',av_apikey)
 md.display('csv')
 md.display('data')
 md.getCombined()
 md.display('all')
-md2.getFromInternet(stocks,'qd')
+md2.getFromInternet(stocks,'qd',quandl_apikey)
 md2.display('csv')
 md2.display('data')
 md2.getCombined()

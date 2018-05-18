@@ -1,6 +1,5 @@
 import urllib
 import re
-from apikey import *
 class MarketParser():
 	def __init__():
 		self.stocks=[]
@@ -8,6 +7,12 @@ class MarketParser():
 		res=[]
 		if self.csv=='':
 			return res
+		if re.search(r'Information',self.csv):
+			print self.csv
+			return []
+		if re.search(r'incorrect',self.csv):
+			print self.csv
+			return []
 		tmp=re.sub(r'\r','',self.csv)
 		tmp=tmp.strip('\n')
 		tmp=tmp.split('\n')
@@ -31,6 +36,9 @@ class AlphaVantageParser(MarketParser):
 	def modifyHeader(self,header):
 		return header
 	def getCSV(self,function,stock):
+		if self.apikey=='demo':
+			function='TIME_SERIES_INTRADAY'
+			stock='MSFT'
 		baseurl='https://www.alphavantage.co/'
 		params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv'})
 		try:
@@ -43,9 +51,8 @@ class AlphaVantageParser(MarketParser):
 class QuandlParser(MarketParser):
 	def __init__(self,apikey):
 		self.csv=''
-		try:
-			self.apikey=quandl_apikey
-		except:
+		self.apikey=apikey
+		if self.apikey=='':
 			self.apikey=None
 	def modifyHeader(self,header):
 		header=re.sub(r'Date','timestamp',header)
