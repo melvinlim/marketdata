@@ -10,7 +10,8 @@ class MarketParser():
 		tmp=re.sub(r'\r','',self.csv)
 		tmp=tmp.strip('\n')
 		tmp=tmp.split('\n')
-		header=tmp[0].split(',')
+		header=self.modifyHeader(tmp[0])
+		header=header.split(',')
 		body=tmp[1:]
 		for line in body:
 			dLine=dict()
@@ -24,6 +25,8 @@ class AlphaVantageParser(MarketParser):
 	def __init__(self,apikey):
 		self.csv=''
 		self.apikey=apikey
+	def modifyHeader(self,header):
+		return header
 	def getCSV(self,function,stock):
 		baseurl='https://www.alphavantage.co/'
 		params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv'})
@@ -38,6 +41,9 @@ class QuandlParser(MarketParser):
 	def __init__(self,apikey):
 		self.csv=''
 		self.apikey=apikey
+	def modifyHeader(self,header):
+		header=re.sub(r'Date','timestamp',header)
+		return header
 	def getCSV(self,function,stock):
 		database_code='EOD'
 		database_code='WIKI'
