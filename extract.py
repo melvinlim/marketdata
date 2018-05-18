@@ -3,7 +3,8 @@ md=MarketData()
 md2=MarketData()
 #stocks=['MSFT','FB','AAPL']
 #stocks=['MSFT']
-stocks=['FB']
+#stocks=['FB']
+stocks=['NDX']
 #stocks=['SPY','XUS.TO']
 md.getFromInternet(stocks)
 md.display('csv')
