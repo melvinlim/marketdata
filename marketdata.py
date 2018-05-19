@@ -14,7 +14,7 @@ class MarketData(dict):
 				fp=open(filename,'w')
 				fp.write(self[stock]['csv'])
 				fp.close()
-	def openCSV(self,files):
+	def openCSV(self,files,apikey='demo'):
 		for f in files:
 			filename=f
 			if not os.path.isfile(filename):
@@ -23,9 +23,18 @@ class MarketData(dict):
 			fp=open(filename,'r')
 			fn=filename.strip('\n')
 			fn=fn.strip('\r')
+			fn=fn.strip('.csv')
 			stock,parser=fn.split('-')
+			print parser
+			if parser=='alphavantage':
+				self.parser=AlphaVantageParser(apikey)
+			elif parser=='quandl':
+				self.parser=QuandlParser(apikey)
 			self[stock]=Stock()
-			self[stock]['csv']=fp.read()
+			csv=fp.read()
+			self[stock]['csv']=csv
+			data=self.parser.getData(csv)
+			self[stock]['data']=data
 	def getFromInternet(self,stocks,parser='AlphaVantage',apikey='demo'):
 		if parser=='AlphaVantage':
 			self.parser=AlphaVantageParser(apikey)
@@ -34,10 +43,10 @@ class MarketData(dict):
 		function='TIME_SERIES_DAILY_ADJUSTED'
 		for stock in stocks:
 			newStock=Stock()
-			s=self.parser.getCSV(function,stock)
-			newStock['csv']=s
-			s=self.parser.getData()
-			newStock['data']=s
+			csv=self.parser.getCSV(function,stock)
+			newStock['csv']=csv
+			data=self.parser.getData(csv)
+			newStock['data']=data
 			self[stock]=newStock
 		self.stocks=self.keys()
 	def display(self,target):

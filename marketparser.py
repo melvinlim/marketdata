@@ -1,19 +1,19 @@
 import urllib
 import re
 class MarketParser():
-	def __init__():
+	def __init__(self):
 		self.stocks=[]
-	def getData(self):
+	def getData(self,csv):
 		res=[]
-		if self.csv=='':
+		if csv=='':
 			return res
-		if re.search(r'Information',self.csv):
-			print self.csv
+		if re.search(r'Information',csv):
+			print csv
 			return []
-		if re.search(r'incorrect',self.csv):
-			print self.csv
+		if re.search(r'incorrect',csv):
+			print csv
 			return []
-		tmp=re.sub(r'\r','',self.csv)
+		tmp=re.sub(r'\r','',csv)
 		tmp=tmp.strip('\n')
 		tmp=tmp.split('\n')
 		header=self.modifyHeader(tmp[0])
@@ -59,7 +59,8 @@ class QuandlParser(MarketParser):
 	def modifyHeader(self,header):
 		header=re.sub(r'Date','timestamp',header)
 		header=header.lower()
-		if self.database_code=='NASDAQOMX':
+#		if self.database_code=='NASDAQOMX':
+		if True:
 			header=re.sub(r'trade timestamp','timestamp',header)
 			header=re.sub(r'index value','adjusted_close',header)
 		return header
