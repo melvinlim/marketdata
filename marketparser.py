@@ -31,6 +31,7 @@ class MarketParser():
 		return res
 class AlphaVantageParser(MarketParser):
 	def __init__(self,apikey):
+		self.name='alphavantage'
 		self.csv=''
 		self.apikey=apikey
 	def modifyHeader(self,header):
@@ -50,6 +51,7 @@ class AlphaVantageParser(MarketParser):
 		return self.csv
 class QuandlParser(MarketParser):
 	def __init__(self,apikey):
+		self.name='quandl'
 		self.csv=''
 		self.apikey=apikey
 		if self.apikey=='':

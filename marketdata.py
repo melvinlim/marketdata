@@ -4,9 +4,9 @@ import os.path
 class MarketData(dict):
 	def __init__(self):
 		self.stocks=[]
-	def saveCSV(self,stocks,prefix=''):
+	def saveCSV(self,stocks):
 		for stock in stocks:
-			filename=prefix+stock+'.csv'
+			filename=stock+'-'+self.parser.name+'.csv'
 			if os.path.isfile(filename):
 				print 'file exists.  not saving.'
 				return False
@@ -14,10 +14,22 @@ class MarketData(dict):
 				fp=open(filename,'w')
 				fp.write(self[stock]['csv'])
 				fp.close()
-	def getFromInternet(self,stocks,parser='av',apikey='demo'):
-		if parser=='av':
+	def openCSV(self,files):
+		for f in files:
+			filename=f
+			if not os.path.isfile(filename):
+				print 'file: '+filename+' does not exist.'
+				return False
+			fp=open(filename,'r')
+			fn=filename.strip('\n')
+			fn=fn.strip('\r')
+			stock,parser=fn.split('-')
+			self[stock]=Stock()
+			self[stock]['csv']=fp.read()
+	def getFromInternet(self,stocks,parser='AlphaVantage',apikey='demo'):
+		if parser=='AlphaVantage':
 			self.parser=AlphaVantageParser(apikey)
-		elif parser=='qd':
+		elif parser=='Quandl':
 			self.parser=QuandlParser(apikey)
 		function='TIME_SERIES_DAILY_ADJUSTED'
 		for stock in stocks:
