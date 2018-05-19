@@ -1,8 +1,19 @@
 from marketparser import *
 from stock import *
+import os.path
 class MarketData(dict):
 	def __init__(self):
 		self.stocks=[]
+	def saveCSV(self,stocks,prefix=''):
+		for stock in stocks:
+			filename=prefix+stock+'.csv'
+			if os.path.isfile(filename):
+				print 'file exists.  not saving.'
+				return False
+			else:
+				fp=open(filename,'w')
+				fp.write(self[stock]['csv'])
+				fp.close()
 	def getFromInternet(self,stocks,parser='av',apikey='demo'):
 		if parser=='av':
 			self.parser=AlphaVantageParser(apikey)
