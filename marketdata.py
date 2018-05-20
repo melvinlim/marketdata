@@ -1,9 +1,23 @@
 from marketparser import *
 from stock import *
 import os.path
+import pickle
 class MarketData(dict):
-	def __init__(self):
+	def __init__(self,filename=''):
 		self.stocks=[]
+		if filename!='':
+			fp=open(filename,'r')
+			self['all']=pickle.load(fp)
+	def saveCombined(self):
+		if 'all' not in self:
+			print 'combined data not present.'
+			return False
+		filename='allData.pkl'
+		if os.path.isfile(filename):
+			print 'file exists.  not saving.'
+			return False
+		fp=open(filename,'w')
+		pickle.dump(self['all'],fp)
 	def saveCSV(self,stocks):
 		for stock in stocks:
 			filename=stock+'-'+self.parser.name+'.csv'
