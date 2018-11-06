@@ -2,6 +2,7 @@ from marketparser import *
 from stock import *
 import os.path
 import pickle
+import time
 class MarketData(dict):
 	def __init__(self,filename=''):
 		self.stocks=[]
@@ -55,13 +56,20 @@ class MarketData(dict):
 		elif parser=='Quandl':
 			self.parser=QuandlParser(apikey)
 		function='TIME_SERIES_DAILY_ADJUSTED'
+		i=0
 		for stock in stocks:
+			i+=1
 			newStock=Stock()
 			csv=self.parser.getCSV(function,stock)
 			newStock['csv']=csv
 			data=self.parser.getData(csv)
 			newStock['data']=data
 			self[stock]=newStock
+			if parser=='AlphaVantage' and i>=5:
+				self.display('csv')
+				print 'AlphaVantage only allows 5 queries per minute.  waiting 60 seconds.'
+				i=0
+				time.sleep(60)
 		self.stocks=self.keys()
 	def display(self,target):
 		if target=='csv':
