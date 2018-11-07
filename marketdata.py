@@ -6,6 +6,7 @@ import time
 class MarketData(dict):
 	def __init__(self,filename=''):
 		self.stocks=[]
+		self.intraday=[]
 		if filename!='':
 			fp=open(filename,'r')
 			self['all']=pickle.load(fp)
@@ -19,16 +20,20 @@ class MarketData(dict):
 			return False
 		fp=open(filename,'w')
 		pickle.dump(self['all'],fp)
+	def _saveCSV(self,target,filename):
+		if os.path.isfile(filename):
+			print 'file exists.  not saving.'
+			return False
+		else:
+			fp=open(filename,'w')
+			fp.write(target)
+			fp.close()
 	def saveCSV(self,stocks):
 		for stock in stocks:
-			filename=stock+'-'+self.parser.name+'.csv'
-			if os.path.isfile(filename):
-				print 'file exists.  not saving.'
-				return False
-			else:
-				fp=open(filename,'w')
-				fp.write(self[stock]['csv'])
-				fp.close()
+			filename=stock+'-'+'DAILY'+'-'+self.parser.name+'.csv'
+			self._saveCSV(self[stock]['csv'],filename)
+			filename=stock+'-'+'INTRADAY'+'-'+self.parser.name+'.csv'
+			self._saveCSV(self[stock]['intraday_csv'],filename)
 	def openCSV(self,files,apikey='demo'):
 		for f in files:
 			filename=f
@@ -70,6 +75,16 @@ class MarketData(dict):
 				print 'AlphaVantage only allows 5 queries per minute.  waiting 60 seconds.'
 				i=0
 				time.sleep(60)
+#get intraday data
+			i+=1
+			csv=self.parser.getCSV('TIME_SERIES_INTRADAY',stock)
+			self[stock]['intraday_csv']=csv
+			if parser=='AlphaVantage' and i>=5:
+				self.display('csv')
+				print 'AlphaVantage only allows 5 queries per minute.  waiting 60 seconds.'
+				i=0
+				time.sleep(60)
+#
 		self.stocks=self.keys()
 	def display(self,target):
 		if target=='csv':

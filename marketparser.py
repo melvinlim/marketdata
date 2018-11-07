@@ -42,7 +42,10 @@ class AlphaVantageParser(MarketParser):
 			stock='MSFT'
 		baseurl='https://www.alphavantage.co/'
 		#params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv'})
-		params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv','outputsize':'full'})
+		if function=='TIME_SERIES_INTRADAY':
+			params=urllib.urlencode({'function':function,'symbol':stock,'interval':'1min','apikey':self.apikey,'datatype':'csv','outputsize':'full'})
+		else:
+			params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv','outputsize':'full'})
 		try:
 			f=urllib.urlopen(baseurl+'query?%s'%params)
 			self.csv=f.read()
