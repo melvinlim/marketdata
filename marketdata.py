@@ -2,7 +2,6 @@ from marketparser import *
 from stock import *
 import os.path
 import pickle
-import time
 class MarketData(dict):
 	def __init__(self,filename=''):
 		self.stocks=[]
@@ -34,6 +33,10 @@ class MarketData(dict):
 			self._saveCSV(self[stock]['csv'],filename)
 			filename=stock+'-'+'INTRADAY'+'-'+self.parser.name+'.csv'
 			self._saveCSV(self[stock]['intraday_csv'],filename)
+		filename='USDCAD'+'-'+'DAILY'+'-'+self.parser.name+'.csv'
+		self._saveCSV(self['USDCAD']['forex_daily_csv'],filename)
+		filename='USDCAD'+'-'+'INTRADAY'+'-'+self.parser.name+'.csv'
+		self._saveCSV(self['USDCAD']['forex_intraday_csv'],filename)
 	def openCSV(self,files,apikey='demo'):
 		for f in files:
 			filename=f
@@ -61,29 +64,24 @@ class MarketData(dict):
 		elif parser=='Quandl':
 			self.parser=QuandlParser(apikey)
 		function='TIME_SERIES_DAILY_ADJUSTED'
-		i=0
 		for stock in stocks:
-			i+=1
 			newStock=Stock()
 			csv=self.parser.getCSV(function,stock)
 			newStock['csv']=csv
 			data=self.parser.getData(csv)
 			newStock['data']=data
 			self[stock]=newStock
-			if parser=='AlphaVantage' and i>=5:
-				self.display('csv')
-				print 'AlphaVantage only allows 5 queries per minute.  waiting 60 seconds.'
-				i=0
-				time.sleep(60)
 #get intraday data
-			i+=1
 			csv=self.parser.getCSV('TIME_SERIES_INTRADAY',stock)
 			self[stock]['intraday_csv']=csv
-			if parser=='AlphaVantage' and i>=5:
-				self.display('csv')
-				print 'AlphaVantage only allows 5 queries per minute.  waiting 60 seconds.'
-				i=0
-				time.sleep(60)
+#
+#get forex data
+		newStock=Stock()
+		self['USDCAD']=newStock
+		csv=self.parser.getCSV('FX_DAILY',None)
+		self['USDCAD']['forex_daily_csv']=csv
+		csv=self.parser.getCSV('FX_INTRADAY',None)
+		self['USDCAD']['forex_intraday_csv']=csv
 #
 		self.stocks=self.keys()
 	def display(self,target):

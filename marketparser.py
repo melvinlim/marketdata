@@ -1,5 +1,6 @@
 import urllib
 import re
+import time
 class MarketParser():
 	def __init__(self):
 		self.stocks=[]
@@ -34,9 +35,15 @@ class AlphaVantageParser(MarketParser):
 		self.name='alphavantage'
 		self.csv=''
 		self.apikey=apikey
+		self.count=0
 	def modifyHeader(self,header):
 		return header
 	def getCSV(self,function,stock):
+		if self.count>=5:
+			print 'AlphaVantage only allows 5 queries per minute.  waiting 60 seconds.'
+			time.sleep(60)
+			self.count=0
+		self.count+=1
 		if self.apikey=='demo':
 			function='TIME_SERIES_INTRADAY'
 			stock='MSFT'
@@ -44,6 +51,10 @@ class AlphaVantageParser(MarketParser):
 		#params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv'})
 		if function=='TIME_SERIES_INTRADAY':
 			params=urllib.urlencode({'function':function,'symbol':stock,'interval':'1min','apikey':self.apikey,'datatype':'csv','outputsize':'full'})
+		elif function=='FX_INTRADAY':
+			params=urllib.urlencode({'function':function,'from_symbol':'USD','to_symbol':'CAD','interval':'1min','apikey':self.apikey,'datatype':'csv','outputsize':'full'})
+		elif function=='FX_DAILY':
+			params=urllib.urlencode({'function':function,'from_symbol':'USD','to_symbol':'CAD','apikey':self.apikey,'datatype':'csv','outputsize':'full'})
 		else:
 			params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv','outputsize':'full'})
 		try:
@@ -69,6 +80,7 @@ class QuandlParser(MarketParser):
 			header=re.sub(r'index value','adjusted_close',header)
 		return header
 	def getCSV(self,function,stock):
+		self.count+=1
 		if self.apikey:
 			#database_code='EOD'
 			database_code='NASDAQOMX'
