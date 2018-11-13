@@ -37,6 +37,11 @@ class MarketData(dict):
 		self._saveCSV(self['USDCAD']['forex_daily_csv'],filename)
 		filename='USDCAD'+'-'+'INTRADAY'+'-'+self.parser.name+'.csv'
 		self._saveCSV(self['USDCAD']['forex_intraday_csv'],filename)
+	def saveFuturesCSV(self):
+		filename='CHRIS-ES1'+'-'+self.parser.name+'.csv'
+		self._saveCSV(self['ES']['CHRIS'],filename)
+		filename='CME-ESZ2018'+'-'+self.parser.name+'.csv'
+		self._saveCSV(self['ES']['CME'],filename)
 	def openCSV(self,files,apikey='demo'):
 		for f in files:
 			filename=f
@@ -84,6 +89,17 @@ class MarketData(dict):
 		self['USDCAD']['forex_intraday_csv']=csv
 #
 		self.stocks=self.keys()
+	def getFutures(self,parser='Quandl',apikey='demo'):
+		self.parser=QuandlParser(apikey)
+#get futures data
+		newStock=Stock()
+		self['ES']=newStock
+		qdlp=QuandlParser(apikey)
+#		csv=self.parser.getCSV('CHRIS',None)
+#		self['ES']['CHRIS']=csv
+		csv=self.parser.getCSV('CME',None)
+		self['ES']['CME']=csv
+#
 	def display(self,target):
 		if target=='csv':
 			for stock in self.keys():

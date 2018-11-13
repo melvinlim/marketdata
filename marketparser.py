@@ -80,17 +80,25 @@ class QuandlParser(MarketParser):
 			header=re.sub(r'index value','adjusted_close',header)
 		return header
 	def getCSV(self,function,stock):
-		self.count+=1
 		if self.apikey:
 			#database_code='EOD'
-			database_code='NASDAQOMX'
+			if function=='CHRIS':
+				database_code='CHRIS'
+			elif function=='CME':
+				database_code='CME'
+			else:
+				database_code='NASDAQOMX'
 		else:
 			database_code='WIKI'
 		self.database_code=database_code
-		dataset_code=stock
+		if function=='CHRIS':
+			dataset_code='CME_ES1'
+		elif function=='CME':
+			dataset_code='ESZ2018'
+		else:
+			dataset_code=stock
 		return_format='csv'
 		baseurl='https://www.quandl.com/api/v3/datasets/'+database_code+'/'+dataset_code+'/data.'+return_format
-#		params=urllib.urlencode({'function':function,'symbol':stock,'apikey':self.apikey,'datatype':'csv'})
 		if self.apikey:
 			params=urllib.urlencode({'api_key':self.apikey})
 		else:
