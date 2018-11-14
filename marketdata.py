@@ -38,10 +38,13 @@ class MarketData(dict):
 		filename='USDCAD'+'-'+'INTRADAY'+'-'+self.parser.name+'.csv'
 		self._saveCSV(self['USDCAD']['forex_intraday_csv'],filename)
 	def saveFuturesCSV(self):
-		filename='CHRIS-ES1'+'-'+self.parser.name+'.csv'
-		self._saveCSV(self['ES']['CHRIS'],filename)
-		filename='CME-ESZ2018'+'-'+self.parser.name+'.csv'
-		self._saveCSV(self['ES']['CME'],filename)
+		if 'ES' in self:
+			if 'CHRIS' in self['ES']:
+				filename='CHRIS-ES1'+'-'+self.parser.name+'.csv'
+				self._saveCSV(self['ES']['CHRIS'],filename)
+			if 'CME' in self['ES']:
+				filename='CME-ESZ2018'+'-'+self.parser.name+'.csv'
+				self._saveCSV(self['ES']['CME'],filename)
 	def openCSV(self,files,apikey='demo'):
 		for f in files:
 			filename=f
