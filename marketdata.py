@@ -2,6 +2,7 @@ from marketparser import *
 from stock import *
 import os.path
 import pickle
+import time
 class MarketData(dict):
 	def __init__(self,filename=''):
 		self.stocks=[]
@@ -28,22 +29,24 @@ class MarketData(dict):
 			fp.write(target)
 			fp.close()
 	def saveCSV(self,stocks):
+		t=time.strftime('%F')
 		for stock in stocks:
-			filename=stock+'-'+'DAILY'+'-'+self.parser.name+'.csv'
+			filename=stock+'_'+'DAILY'+'_'+t+'.csv'
 			self._saveCSV(self[stock]['csv'],filename)
-			filename=stock+'-'+'INTRADAY'+'-'+self.parser.name+'.csv'
+			filename=stock+'_'+'INTRADAY'+'_'+t+'.csv'
 			self._saveCSV(self[stock]['intraday_csv'],filename)
-		filename='USDCAD'+'-'+'DAILY'+'-'+self.parser.name+'.csv'
+		filename='USDCAD'+'_'+'DAILY'+'_'+t+'.csv'
 		self._saveCSV(self['USDCAD']['forex_daily_csv'],filename)
-		filename='USDCAD'+'-'+'INTRADAY'+'-'+self.parser.name+'.csv'
+		filename='USDCAD'+'_'+'INTRADAY'+'_'+t+'.csv'
 		self._saveCSV(self['USDCAD']['forex_intraday_csv'],filename)
 	def saveFuturesCSV(self):
+		t=time.strftime('%F')
 		if 'ES' in self:
 			if 'CHRIS' in self['ES']:
-				filename='CHRIS-ES1'+'-'+self.parser.name+'.csv'
+				filename='CHRIS-ES1'+'_'+t+'.csv'
 				self._saveCSV(self['ES']['CHRIS'],filename)
 			if 'CME' in self['ES']:
-				filename='CME-ESZ2018'+'-'+self.parser.name+'.csv'
+				filename='CME-ESZ2018'+'_'+t+'.csv'
 				self._saveCSV(self['ES']['CME'],filename)
 	def openCSV(self,files,apikey='demo'):
 		for f in files:
@@ -55,7 +58,7 @@ class MarketData(dict):
 			fn=filename.strip('\n')
 			fn=fn.strip('\r')
 			fn=fn.strip('.csv')
-			stock,parser=fn.split('-')
+			stock,parser=fn.split('_')
 			print parser
 			if parser=='alphavantage':
 				self.parser=AlphaVantageParser(apikey)
