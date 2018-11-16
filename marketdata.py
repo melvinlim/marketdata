@@ -14,15 +14,18 @@ class MarketData(dict):
 		if 'all' not in self:
 			print 'combined data not present.'
 			return False
-		filename='allData.pkl'
+		directory=time.strftime('%F')
+		if not os.path.isdir(directory):
+			os.mkdir(directory)
+		filename=directory+'/allData.pkl'
 		if os.path.isfile(filename):
-			print 'file exists.  not saving.'
+			print filename+' exists.  not saving.'
 			return False
 		fp=open(filename,'w')
 		pickle.dump(self['all'],fp)
 	def _saveCSV(self,target,filename):
 		if os.path.isfile(filename):
-			print 'file exists.  not saving.'
+			print filename+' exists.  not saving.'
 			return False
 		else:
 			fp=open(filename,'w')
@@ -30,23 +33,31 @@ class MarketData(dict):
 			fp.close()
 	def saveCSV(self,stocks):
 		t=time.strftime('%F')
+		directory=time.strftime('%F')
+		if not os.path.isdir(directory):
+			os.mkdir(directory)
 		for stock in stocks:
-			filename=stock+'_'+'DAILY'+'_'+t+'.csv'
+			filename=directory+'/'+stock+'_'+'DAILY'+'_'+t+'.csv'
 			self._saveCSV(self[stock]['csv'],filename)
-			filename=stock+'_'+'INTRADAY'+'_'+t+'.csv'
+			filename=directory+'/'+stock+'_'+'DAILY_ADJ'+'_'+t+'.csv'
+			self._saveCSV(self[stock]['adj_csv'],filename)
+			filename=directory+'/'+stock+'_'+'INTRADAY'+'_'+t+'.csv'
 			self._saveCSV(self[stock]['intraday_csv'],filename)
-		filename='USDCAD'+'_'+'DAILY'+'_'+t+'.csv'
+		filename=directory+'/'+'USDCAD'+'_'+'DAILY'+'_'+t+'.csv'
 		self._saveCSV(self['USDCAD']['forex_daily_csv'],filename)
-		filename='USDCAD'+'_'+'INTRADAY'+'_'+t+'.csv'
+		filename=directory+'/'+'USDCAD'+'_'+'INTRADAY'+'_'+t+'.csv'
 		self._saveCSV(self['USDCAD']['forex_intraday_csv'],filename)
 	def saveFuturesCSV(self):
 		t=time.strftime('%F')
+		directory=time.strftime('%F')
+		if not os.path.isdir(directory):
+			os.mkdir(directory)
 		if 'ES' in self:
 			if 'CHRIS' in self['ES']:
-				filename='CHRIS-ES1'+'_'+t+'.csv'
+				filename=directory+'/'+'CHRIS_ES1'+'_'+t+'.csv'
 				self._saveCSV(self['ES']['CHRIS'],filename)
 			if 'CME' in self['ES']:
-				filename='CME-ESZ2018'+'_'+t+'.csv'
+				filename=directory+'/'+'CME_ESZ2018'+'_'+t+'.csv'
 				self._saveCSV(self['ES']['CME'],filename)
 	def openCSV(self,files,apikey='demo'):
 		for f in files:
@@ -74,11 +85,12 @@ class MarketData(dict):
 			self.parser=AlphaVantageParser(apikey)
 		elif parser=='Quandl':
 			self.parser=QuandlParser(apikey)
-		function='TIME_SERIES_DAILY_ADJUSTED'
 		for stock in stocks:
 			newStock=Stock()
-			csv=self.parser.getCSV(function,stock)
+			csv=self.parser.getCSV('TIME_SERIES_DAILY',stock)
 			newStock['csv']=csv
+			csv=self.parser.getCSV('TIME_SERIES_DAILY_ADJUSTED',stock)
+			newStock['adj_csv']=csv
 			data=self.parser.getData(csv)
 			newStock['data']=data
 			self[stock]=newStock

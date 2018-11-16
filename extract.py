@@ -5,7 +5,7 @@ from apikey import *
 #stocks=['FB']
 #stocks=['NDX']
 #stocks=['SPY','XUS.TO']
-stocks=['SPY','EEM','XLF','QQQ','GDX','FXI','USO','FXC','VIX','XUS.TO']
+stocks=['SPY','EEM','XLF','QQQ','GDX','FXI','USO','VIX','XUS.TO','XIU.TO','XSP.TO','G.TO','XLU','XLP']
 md1=MarketData()
 md1.getFromInternet(stocks,'AlphaVantage',av_apikey)
 md1.display('csv')
